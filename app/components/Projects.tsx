@@ -1,7 +1,6 @@
 "use client"
 import { useRef } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
-import Image from "next/image"
 
 const projects: Project[] = [
   {
