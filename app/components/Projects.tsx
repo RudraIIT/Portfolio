@@ -3,7 +3,7 @@ import { useRef } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import Image from "next/image"
 
-const projects = [
+const projects: Project[] = [
   {
     id: 1,
     title: "Chat-App",
@@ -16,7 +16,7 @@ const projects = [
     title: "Code-Craft",
     description: "A sleek and interactive web-based code editor that supports multiple languages and syntax highlighting.",
     image: "/placeholder.svg?height=300&width=400",
-    tags: ["ReactJs", "WebSocket", "WebSocket", "Docker"],
+    tags: ["ReactJs", "WebSocket", "Docker"],
   },
   {
     id: 3,
@@ -46,8 +46,8 @@ function ProjectCard({ project }: { project: Project }) {
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["17.5deg", "-17.5deg"])
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-17.5deg", "17.5deg"])
 
-  const handleMouseMove = (e:any) => {
-    if (!ref.current) return;
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!ref.current) return
     const rect = ref.current.getBoundingClientRect()
     const width = rect.width
     const height = rect.height
@@ -93,8 +93,8 @@ function ProjectCard({ project }: { project: Project }) {
           <p className="text-text mb-4">{project.description}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span key={tag} className="bg-secondary text-background text-sm rounded-full px-3 py-1">
+          {project.tags.map((tag, index) => (
+            <span key={`${project.id}-${index}`} className="bg-secondary text-background text-sm rounded-full px-3 py-1">
               {tag}
             </span>
           ))}
@@ -126,4 +126,3 @@ export default function Projects() {
     </section>
   )
 }
-

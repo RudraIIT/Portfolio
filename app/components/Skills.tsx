@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import * as THREE from "three"
-import Image from "next/image"
+import Image, { StaticImageData } from "next/image"
 import reactLogo from "@/public/react.svg"
 import nextLogo from "@/public/Next.js.svg"
 import typeScriptLogo from "@/public/typescript.png"
@@ -14,10 +14,10 @@ import dockerLogo from "@/public/docker.svg"
 interface Skill {
   name: string
   color: string
-  icon: any
+  icon: StaticImageData // Updated from `any` to `StaticImageData` for better type safety
 }
 
-const skills = [
+const skills: Skill[] = [
   { name: "React", color: "#61DAFB", icon: reactLogo },
   { name: "Next.js", color: "#000000", icon: nextLogo },
   { name: "TypeScript", color: "#3178C6", icon: typeScriptLogo },
@@ -27,7 +27,7 @@ const skills = [
   { name: "Docker", color: "#2496ED", icon: dockerLogo },
 ]
 
-function SkillCard({ skill } : {skill : Skill}) {
+function SkillCard({ skill }: { skill: Skill }) {
   const ref = useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -38,8 +38,8 @@ function SkillCard({ skill } : {skill : Skill}) {
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["17.5deg", "-17.5deg"])
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-17.5deg", "17.5deg"])
 
-  const handleMouseMove = (e : any) => {
-    if(!ref.current) return;
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return
     const rect = ref.current.getBoundingClientRect()
     const width = rect.width
     const height = rect.height
@@ -73,7 +73,7 @@ function SkillCard({ skill } : {skill : Skill}) {
         className="h-full w-full bg-background rounded-xl p-4 flex flex-col items-center justify-center transform-style-3d"
         style={{ transform: "translateZ(20px)" }}
       >
-        <Image src={skill.icon || "/placeholder.svg"} alt={skill.name} width={64} height={64} className="mb-2" />
+        <Image src={skill.icon} alt={skill.name} width={64} height={64} className="mb-2" />
         <h3 className="text-lg font-semibold" style={{ color: skill.color }}>
           {skill.name}
         </h3>
@@ -91,6 +91,8 @@ export default function Skills() {
   useEffect(() => {
     if (!containerRef.current) return
 
+    const container = containerRef.current
+
     // Scene setup
     const scene = new THREE.Scene()
     sceneRef.current = scene
@@ -98,7 +100,7 @@ export default function Skills() {
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
       75,
-      containerRef.current.clientWidth / containerRef.current.clientHeight,
+      container.clientWidth / container.clientHeight,
       0.1,
       1000,
     )
@@ -107,8 +109,8 @@ export default function Skills() {
 
     // Renderer setup
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
-    renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight)
-    containerRef.current.appendChild(renderer.domElement)
+    renderer.setSize(container.clientWidth, container.clientHeight)
+    container.appendChild(renderer.domElement)
     rendererRef.current = renderer
 
     // Create particle system
@@ -141,18 +143,22 @@ export default function Skills() {
 
     // Handle resize
     const handleResize = () => {
-      if (!containerRef.current || !cameraRef.current || !rendererRef.current) return
-      cameraRef.current.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight
-      cameraRef.current.updateProjectionMatrix()
-      rendererRef.current.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight)
+      if (!camera || !renderer) return
+      camera.aspect = container.clientWidth / container.clientHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(container.clientWidth, container.clientHeight)
     }
     window.addEventListener("resize", handleResize)
 
+    // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize)
-      if (containerRef.current && rendererRef.current) {
-        containerRef.current.removeChild(rendererRef.current.domElement)
+      if (renderer) {
+        renderer.dispose()
+        renderer.domElement.remove()
       }
+      if (particlesGeometry) particlesGeometry.dispose()
+      if (particlesMaterial) particlesMaterial.dispose()
     }
   }, [])
 
@@ -178,4 +184,3 @@ export default function Skills() {
     </section>
   )
 }
-
