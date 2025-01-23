@@ -82,13 +82,6 @@ function ProjectCard({ project }: { project: Project }) {
         style={{ transform: "translateZ(50px)" }}
       >
         <div>
-          <Image
-            src={project.image || "/placeholder.svg"}
-            alt={project.title}
-            width={400}
-            height={300}
-            className="w-full h-40 object-cover rounded-lg mb-4"
-          />
           <h3 className="text-2xl font-bold mb-2 text-primary">{project.title}</h3>
           <p className="text-text mb-4">{project.description}</p>
         </div>
