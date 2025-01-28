@@ -40,7 +40,7 @@ export default function About() {
                         viewport={{ once: true }}
                     >
                         <p className="text-lg mb-6">
-                            I&apos;m a passionate full-stack developer with a keen eye for design and a love for creating seamless user
+                            I&apos;m a passionate full-stack developer with a keen eye for backend and a love for creating seamless user
                             experiences. With expertise in modern web technologies, I bring ideas to life through clean, efficient
                             code and stunning visuals.
                         </p>
